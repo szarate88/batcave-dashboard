@@ -17,6 +17,7 @@
             --success: #34d399;
             --warning: #fbbf24;
             --danger: #f87171;
+            --highlight-bg: rgba(16, 185, 129, 0.15);
         }
 
         body {
@@ -122,7 +123,7 @@
             background-color: rgba(56, 189, 248, 0.02);
         }
 
-        /* Estilos del Manifiesto de Alineación */
+        /* Estilos de Alineación */
         .alignment-section { margin-bottom: 16px; }
         .alignment-title { font-size: 13px; font-weight: 700; color: var(--accent); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
         .alignment-box { background-color: #0f172a; padding: 12px 16px; border-radius: 8px; font-size: 13px; line-height: 1.5; border-left: 3px solid var(--border); margin-bottom: 8px; }
@@ -130,7 +131,19 @@
         .alignment-box li { margin-bottom: 6px; }
         .highlight-text { color: var(--warning); font-weight: 600; }
 
-        /* Sistema de Pestañas de Compromisos Semanales */
+        /* Módulo Control de Hábitos */
+        .date-badge {
+            background-color: #0f172a;
+            border: 1px solid var(--border);
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-bottom: 14px;
+            letter-spacing: 0.05em;
+        }
         .week-tabs {
             display: flex;
             gap: 4px;
@@ -147,6 +160,7 @@
             font-size: 12px;
             cursor: pointer;
             font-weight: 500;
+            outline: none;
         }
         .tab-btn.active {
             background: var(--accent);
@@ -160,19 +174,34 @@
         .checkbox-container {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-size: 13px;
             line-height: 1.4;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
         }
         .checkbox-container input {
-            margin-right: 10px;
-            margin-top: 3px;
-            accent-color: var(--accent);
+            margin-right: 12px;
+            margin-top: 2px;
+            accent-color: var(--success);
             cursor: pointer;
+            width: 15px;
+            height: 15px;
         }
-        .checkbox-container label { cursor: pointer; }
-        .week-prev .checkbox-container input { pointer-events: none; opacity: 0.6; } /* Bloquear edición en semana anterior */
-        .week-prev .checkbox-container label { color: var(--text-muted); }
+        .checkbox-container label { cursor: pointer; flex-grow: 1; }
+        
+        /* Resaltado dinámico para la Semana Actual */
+        .checkbox-container.selected-habit {
+            background-color: var(--highlight-bg);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #ffffff;
+            font-weight: 500;
+        }
+        
+        .week-prev .checkbox-container { background: rgba(30, 41, 59, 0.3); border-color: var(--border); }
+        .week-prev .checkbox-container input { pointer-events: none; opacity: 0.4; }
 
         /* Tablas */
         .table-wrapper { overflow-x: auto; }
@@ -212,9 +241,7 @@
     </header>
 
     <div class="dashboard-grid">
-        <!-- COLUMNA PRINCIPAL REORDENADA -->
         <div class="main-content">
-            <!-- 1. ACTIVE PROJECTS -->
             <div class="card">
                 <h2>Active Projects</h2>
                 <div class="table-wrapper" id="table-projects">
@@ -222,7 +249,6 @@
                 </div>
             </div>
 
-            <!-- 2. GRANT PIPELINE (MOVIDO AQUÍ) -->
             <div class="card">
                 <h2>Grant Pipeline</h2>
                 <div class="table-wrapper" id="table-grants">
@@ -230,7 +256,6 @@
                 </div>
             </div>
 
-            <!-- 3. PUBLICATIONS PROGRESS -->
             <div class="card">
                 <h2>Publications Progress</h2>
                 <div class="table-wrapper" id="table-publications">
@@ -238,7 +263,6 @@
                 </div>
             </div>
 
-            <!-- 4. OPPORTUNITIES LOG -->
             <div class="card">
                 <h2>Opportunities Log</h2>
                 <div class="table-wrapper" id="table-opportunities">
@@ -247,9 +271,7 @@
             </div>
         </div>
 
-        <!-- COLUMNA LATERAL: MISSION CONTROL -->
         <div class="sidebar">
-            <!-- STRATEGIC LAUNCHPAD CON AIRTABLE -->
             <div class="card">
                 <h2>Strategic Launchpad</h2>
                 <div class="launchpad-grid">
@@ -257,12 +279,10 @@
                     <a href="https://app.todoist.com/app/project/chamba-6Crg5Vx6ff2GXp7v" target="_blank" class="launch-btn">✅ Todoist</a>
                     <a href="https://www.linkedin.com/feed/" target="_blank" class="launch-btn">💼 LinkedIn</a>
                     <a href="https://drive.google.com/drive/u/0/my-drive" target="_blank" class="launch-btn">💾 Google Drive</a>
-                    <!-- ENLACE DE AIRTABLE EXTENDIDO -->
                     <a href="https://airtable.com/app2rlFCWiu1IksPc/tblfPjmUiQeTs6FM2/viwtX0HWhfOKR06sL?blocks=hide" target="_blank" class="launch-btn launch-btn-wide">📊 III Encuentro CTS Perú 2026 ↗</a>
                 </div>
             </div>
 
-            <!-- MORNING ALIGNMENT -->
             <div class="card">
                 <h2>Morning Alignment</h2>
                 <div class="alignment-section">
@@ -289,22 +309,22 @@
                 </div>
             </div>
 
-            <!-- COMPROMISOS EVALUABLES POR PESTAÑAS SEMANALES -->
+            <!-- MODULO COMPROMISOS ACTUALIZADO -->
             <div class="card">
                 <h2>Compromisos de Hábitos</h2>
                 
+                <!-- FECHA FIJA ACTUALIZADA SOLICITADA -->
+                <div class="date-badge" id="current-week-date">SEMANA DEL 06 AL 12 DE JULIO, 2026</div>
+                
                 <div class="week-tabs">
-                    <button class="tab-btn active" onclick="switchWeek('current')">Semana Actual</button>
-                    <button class="tab-btn" onclick="switchWeek('previous')">Semana Anterior</button>
+                    <button class="tab-btn active" id="btn-curr" onclick="switchWeek('current')">Semana Actual</button>
+                    <button class="tab-btn" id="btn-prev" onclick="switchWeek('previous')">Semana Anterior</button>
                 </div>
 
-                <!-- CONTENEDOR SEMANA ACTUAL (INTERACTIVO) -->
                 <div id="week-current" class="week-content active">
-                    <!-- Los checkboxes se cargan automáticamente desde el script para persistir datos -->
                     <div id="current-habits-list"></div>
                 </div>
 
-                <!-- CONTENEDOR SEMANA ANTERIOR (HISTORIAL HISTÓRICO) -->
                 <div id="week-previous" class="week-content week-prev">
                     <div id="previous-habits-list"></div>
                 </div>
@@ -314,7 +334,6 @@
 </div>
 
 <script>
-    // Arreglo de los 10 compromisos fundamentales basados en tus notas
     const habitsList = [
         "Levantarme temprano y a dormir temprano (7am / 12am)",
         "Almorzar entre 1-2pm los días de semana",
@@ -328,41 +347,40 @@
         "¡Apoyar proyectos de amigos!"
     ];
 
-    // Lógica para inicializar y guardar los estados en LocalStorage y simular el ciclo semanal
     function initHabitsDashboard() {
-        // Si no existen registros en el navegador, los creamos por defecto
-        if (!localStorage.getItem('batcave_current_week')) {
-            localStorage.setItem('batcave_current_week', JSON.stringify(new Array(habitsList.length).fill(false)));
+        if (!localStorage.getItem('batcave_current_week_v2')) {
+            localStorage.setItem('batcave_current_week_v2', JSON.stringify(new Array(habitsList.length).fill(false)));
         }
-        if (!localStorage.getItem('batcave_previous_week')) {
-            // Simulación inicial: algunos ya alcanzados la semana pasada
-            localStorage.setItem('batcave_previous_week', JSON.stringify([true, true, false, true, false, false, true, false, true, true]));
+        // Primera semana real: el historial de la semana anterior arranca completamente limpio (todo en false)
+        if (!localStorage.getItem('batcave_previous_week_v2')) {
+            localStorage.setItem('batcave_previous_week_v2', JSON.stringify(new Array(habitsList.length).fill(false)));
         }
 
         renderHabits();
     }
 
     function renderHabits() {
-        const currentStates = JSON.parse(localStorage.getItem('batcave_current_week'));
-        const previousStates = JSON.parse(localStorage.getItem('batcave_previous_week'));
+        const currentStates = JSON.parse(localStorage.getItem('batcave_current_week_v2'));
+        const previousStates = JSON.parse(localStorage.getItem('batcave_previous_week_v2'));
 
         let currentHTML = "";
         let previousHTML = "";
 
         habitsList.forEach((habit, index) => {
-            // Construir Semana Actual
+            const isChecked = currentStates[index];
+            // Construcción Semana Actual con toggle de clases de selección/deselección interactiva
             currentHTML += `
-                <div class="checkbox-container">
-                    <input type="checkbox" id="curr_${index}" ${currentStates[index] ? 'checked' : ''} onchange="toggleHabit(${index})">
+                <div class="checkbox-container ${isChecked ? 'selected-habit' : ''}" id="container_curr_${index}">
+                    <input type="checkbox" id="curr_${index}" ${isChecked ? 'checked' : ''} onchange="toggleHabit(${index})">
                     <label for="curr_${index}">${habit}</label>
                 </div>`;
             
-            // Construir Vista Estática de Semana Anterior
+            // Construcción Semana Anterior Limpia (Fase Inicial)
             previousHTML += `
                 <div class="checkbox-container">
                     <input type="checkbox" id="prev_${index}" ${previousStates[index] ? 'checked' : ''} disabled>
-                    <label style="text-decoration: ${previousStates[index] ? 'none' : 'line-through'}; opacity: 0.7;">
-                        ${previousStates[index] ? '✓ Mantenido: ' : '✗ Incumplido: '} ${habit}
+                    <label style="color: var(--text-muted);">
+                        [Sin registros previos] — ${habit}
                     </label>
                 </div>`;
         });
@@ -372,9 +390,10 @@
     }
 
     function toggleHabit(index) {
-        const currentStates = JSON.parse(localStorage.getItem('batcave_current_week'));
+        const currentStates = JSON.parse(localStorage.getItem('batcave_current_week_v2'));
+        // Permite tanto seleccionar como deseleccionar de manera síncrona ante errores de click
         currentStates[index] = !currentStates[index];
-        localStorage.setItem('batcave_current_week', JSON.stringify(currentStates));
+        localStorage.setItem('batcave_current_week_v2', JSON.stringify(currentStates));
         renderHabits();
     }
 
@@ -383,18 +402,16 @@
         document.querySelectorAll('.week-content').forEach(content => content.classList.remove('active'));
 
         if (week === 'current') {
-            event.target.classList.add('active');
+            document.getElementById('btn-curr').classList.add('active');
             document.getElementById('week-current').classList.add('active');
         } else {
-            event.target.classList.add('active');
+            document.getElementById('btn-prev').classList.add('active');
             document.getElementById('week-previous').classList.add('active');
         }
     }
 
-    // Ejecutar inicializador de hábitos
     initHabitsDashboard();
 
-    // Renderizador unificado para las tablas dinámicas
     function generateTableHTML(data) {
         if (!data || data.length === 0) return '<p style="color: var(--text-muted);">Sin registros.</p>';
 
