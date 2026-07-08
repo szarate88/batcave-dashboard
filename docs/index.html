@@ -164,13 +164,20 @@
         margin: { t: 40, r: 20, l: 60, b: 40 }
     };
 
+    // Obtenemos de forma automática el nombre de usuario de GitHub a partir de la URL actual
+    const githubUser = window.location.hostname.split('.')[0];
+    
+    // Construimos las rutas absolutas "raw" que nunca fallan por bloqueos de CORS
+    const urlPubs = `https://raw.githubusercontent.com/${githubUser}/batcave-dashboard/main/data/publications.csv`;
+    const urlGrants = `https://raw.githubusercontent.com/${githubUser}/batcave-dashboard/main/data/grants.csv`;
+    const urlOpps = `https://raw.githubusercontent.com/${githubUser}/batcave-dashboard/main/data/opportunities.csv`;
+
     // 1. CARGAR Y PROCESAR PUBLICACIONES
-    Papa.parse('/batcave-dashboard/data/publications.csv', {
+    Papa.parse(urlPubs, {
         download: true,
         header: true,
         complete: function(results) {
             const data = results.data;
-            // Contar estados
             const counts = {};
             data.forEach(row => {
                 if(row.Status) counts[row.Status] = (counts[row.Status] || 0) + 1;
@@ -189,7 +196,7 @@
     });
 
     // 2. CARGAR Y PROCESAR GRANTS (GANTT)
-    Papa.parse('/batcave-dashboard/data/grants.csv', {
+    Papa.parse(urlGrants, {
         download: true,
         header: true,
         complete: function(results) {
@@ -219,7 +226,7 @@
     });
 
     // 3. CARGAR Y GENERAR TABLA DE OPORTUNIDADES
-    Papa.parse('/batcave-dashboard/data/opportunities.csv', {
+    Papa.parse(urlOpps, {
         download: true,
         header: true,
         complete: function(results) {
@@ -227,13 +234,11 @@
             if(data.length === 0) return;
 
             let tableHtml = '<table><thead><tr>';
-            // Cabeceras
             Object.keys(data[0]).forEach(key => tableHtml += `<th>${key}</th>`);
             tableHtml += '</tr></thead><tbody>';
 
-            // Filas
             data.forEach(row => {
-                if(Object.values(row).some(x => x)) { // Evitar filas vacías
+                if(Object.values(row).some(x => x)) {
                     tableHtml += '<tr>';
                     Object.values(row).forEach(val => tableHtml += `<td>${val || ''}</td>`);
                     tableHtml += '</tr>';
