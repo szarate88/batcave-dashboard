@@ -68,8 +68,8 @@
             margin: 0 -24px;
         }
 
-        .main-content { display: table-cell; width: 72%; vertical-align: top; }
-        .sidebar { display: table-cell; width: 28%; vertical-align: top; }
+        .main-content { display: table-cell; width: 71%; vertical-align: top; }
+        .sidebar { display: table-cell; width: 29%; vertical-align: top; }
 
         .card {
             background-color: var(--bg-card);
@@ -91,12 +91,11 @@
             margin-bottom: 20px;
         }
 
-        /* Estilos del Launchpad de Enlaces */
+        /* Launchpad */
         .launchpad-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            margin-bottom: 15px;
         }
         .launch-btn {
             background-color: #0f172a;
@@ -118,46 +117,60 @@
             transform: translateY(-2px);
         }
 
-        /* Input de Alineación Matutina */
+        /* Estilos del Nuevo Manifiesto de Alineación */
+        .alignment-section {
+            margin-bottom: 16px;
+        }
+        .alignment-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
         .alignment-box {
             background-color: #0f172a;
-            border-left: 3px solid var(--accent);
-            padding: 12px;
-            border-radius: 0 8px 8px 0;
-            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-radius: 8px;
             font-size: 13px;
-            color: var(--text-muted);
+            line-height: 1.5;
+            border-left: 3px solid var(--border);
+            margin-bottom: 8px;
+        }
+        .alignment-box ol, .alignment-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .alignment-box li {
+            margin-bottom: 6px;
+        }
+        .alignment-box li:last-child {
+            margin-bottom: 0;
+        }
+        .highlight-text {
+            color: var(--warning);
+            font-weight: 600;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 8px;
+            font-size: 13px;
             line-height: 1.4;
         }
-        .signature-container {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
+        .checkbox-container input {
+            margin-right: 10px;
+            margin-top: 3px;
+            accent-color: var(--accent);
+            cursor: pointer;
         }
-        .signature-input {
-            background: #0f172a;
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            flex-grow: 1;
-            outline: none;
-        }
-        .signature-input:focus { border-color: var(--accent); }
-
-        /* Contenedor Todoist */
-        .todoist-placeholder {
-            background: rgba(148, 163, 184, 0.05);
-            border: 1px dashed var(--border);
-            padding: 16px;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 13px;
-            color: var(--text-muted);
+        .checkbox-container label {
+            cursor: pointer;
         }
 
-        /* Estilos para tablas HTML */
+        /* Tablas */
         .table-wrapper { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
         th { padding: 12px; background-color: #111827; color: var(--accent); border-bottom: 2px solid var(--border); text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; }
@@ -226,9 +239,9 @@
             </div>
         </div>
 
-        <!-- COLUMNA LATERAL: MISSION CONTROL CON ENLACES REALES -->
+        <!-- COLUMNA LATERAL: MISSION CONTROL TOTAL -->
         <div class="sidebar">
-            <!-- MODULO 1: LAUNCHPAD DE ENLACES CONFIGURADOS -->
+            <!-- LAUNCHPAD -->
             <div class="card">
                 <h2>Strategic Launchpad</h2>
                 <div class="launchpad-grid">
@@ -239,23 +252,80 @@
                 </div>
             </div>
 
-            <!-- MODULO 2: ALINEACIÓN MATUTINA -->
+            <!-- NUEVO MORNING ALIGNMENT INTEGRAL -->
             <div class="card">
                 <h2>Morning Alignment</h2>
-                <div class="alignment-box">
-                    "El conocimiento no es solo infraestructura abierta, sino una responsabilidad ética hacia las comunidades y los territorios."
+                
+                <!-- ¿Por qué hago lo que hago? -->
+                <div class="alignment-section">
+                    <div class="alignment-title">¿Por qué hago lo que hago?</div>
+                    <div class="alignment-box" style="border-left-color: var(--accent);">
+                        <ol>
+                            <li>Arte + Ciencia + Impacto</li>
+                            <li>Institutionalizar los estudios STS en Perú</li>
+                            <li>Quiero a mi país y me comprometo a hacer visible a quienes luchan por un futuro mejor.</li>
+                        </ol>
+                    </div>
                 </div>
-                <div class="signature-container">
-                    <input type="text" id="commanderSignature" class="signature-input" placeholder="Escribe tu nombre para iniciar el día...">
+
+                <!-- ¡Para no olvidar! -->
+                <div class="alignment-section">
+                    <div class="alignment-title">¡Para no olvidar! (Ojo)</div>
+                    <div class="alignment-box" style="border-left-color: var(--warning);">
+                        <ol>
+                            <li>Para saber a dónde voy debo recordar de dónde vengo.</li>
+                            <li>Visión de futuro con raíces sólidas en el pasado. El presente es efímero, <span class="highlight-text">¡pero hoy hay que vivirlo!</span></li>
+                            <li>Humildad + paciencia + resiliencia + una gran sonrisa <span class="highlight-text">(¡Alegría!)</span></li>
+                            <li><strong>¡Hacer pausas es necesario!</strong></li>
+                        </ol>
+                    </div>
                 </div>
             </div>
 
-            <!-- MODULO 3: INTEGRACIÓN INTEGRAL (TODOIST FEED) -->
+            <!-- COMPROMISOS DIARIOS CHECKEABLES -->
             <div class="card">
-                <h2>Todoist Active Feed</h2>
-                <div class="todoist-placeholder">
-                    <p style="margin: 0 0 8px 0; font-weight: 500; color: var(--text-main);">Ecosistema Conectado</p>
-                    Revisa tus bandejas de entrada críticas para sincronizar las tareas inmediatas con las metas del panel central.
+                <h2>Me comprometo a:</h2>
+                <div style="margin-top: 10px;">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="c1">
+                        <label for="c1">Levantarme temprano y a dormir temprano (7am / 12am)</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="c2">
+                        <label for="c2">Almorzar entre 1-2pm los días de semana</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="c3">
+                        <label for="c3">Hacer ejercicio de forma más constante</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="c4">
+                        <label for="c4">Planificar mi semana (lun o dom)</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="c5">
+                        <label for="c5">Gestionar mejor mis gastos</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="c6">
+                        <label for="c6">Reducir tiempo en Internet</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="c7">
+                        <label for="c7">Darme tiempo para escribir en las noches (11-12pm)</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="c8">
+                        <label for="c8">Usar el carro y manejar de manera constante (1 vez o 2 veces x semana)</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="c9">
+                        <label for="c9">Ir a la playa</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="c10">
+                        <label for="c10">¡Apoyar proyectos de amigos!</label>
+                    </div>
                 </div>
             </div>
         </div>
