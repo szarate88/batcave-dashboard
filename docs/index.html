@@ -131,7 +131,7 @@
         .alignment-box li { margin-bottom: 6px; }
         .highlight-text { color: var(--warning); font-weight: 600; }
 
-        /* Módulo Control de Hábitos */
+        /* Control de Hábitos */
         .date-badge {
             background-color: #0f172a;
             border: 1px solid var(--border);
@@ -192,7 +192,6 @@
         }
         .checkbox-container label { cursor: pointer; flex-grow: 1; }
         
-        /* Resaltado dinámico para la Semana Actual */
         .checkbox-container.selected-habit {
             background-color: var(--highlight-bg);
             border-color: rgba(16, 185, 129, 0.3);
@@ -309,11 +308,9 @@
                 </div>
             </div>
 
-            <!-- MODULO COMPROMISOS ACTUALIZADO -->
             <div class="card">
                 <h2>Compromisos de Hábitos</h2>
                 
-                <!-- FECHA FIJA ACTUALIZADA SOLICITADA -->
                 <div class="date-badge" id="current-week-date">SEMANA DEL 06 AL 12 DE JULIO, 2026</div>
                 
                 <div class="week-tabs">
@@ -334,48 +331,45 @@
 </div>
 
 <script>
+    // Lista de hábitos actualizada con las metas específicas de gimnasio y espacio creativo
     const habitsList = [
         "Levantarme temprano y a dormir temprano (7am / 12am)",
         "Almorzar entre 1-2pm los días de semana",
-        "Hacer ejercicio de forma más constante",
+        "Gimnasio/Entrenamiento 3 veces por semana",
         "Planificar mi semana (lun o dom)",
-        "Gestionar mejor mis gastos",
+        "Gestionar mis gastos",
         "Reducir tiempo en Internet",
-        "Darme tiempo para escribir en las noches (11-12pm)",
+        "Espacio creativo matutino (Académico, literario, guiones o visual)",
         "Usar el carro y manejar de manera constante (1 vez o 2 veces x semana)",
-        "Ir a la playa",
-        "¡Apoyar proyectos de amigos!"
+        "Ir a la playa"
     ];
 
     function initHabitsDashboard() {
-        if (!localStorage.getItem('batcave_current_week_v2')) {
-            localStorage.setItem('batcave_current_week_v2', JSON.stringify(new Array(habitsList.length).fill(false)));
+        if (!localStorage.getItem('batcave_current_week_v3')) {
+            localStorage.setItem('batcave_current_week_v3', JSON.stringify(new Array(habitsList.length).fill(false)));
         }
-        // Primera semana real: el historial de la semana anterior arranca completamente limpio (todo en false)
-        if (!localStorage.getItem('batcave_previous_week_v2')) {
-            localStorage.setItem('batcave_previous_week_v2', JSON.stringify(new Array(habitsList.length).fill(false)));
+        if (!localStorage.getItem('batcave_previous_week_v3')) {
+            localStorage.setItem('batcave_previous_week_v3', JSON.stringify(new Array(habitsList.length).fill(false)));
         }
 
         renderHabits();
     }
 
     function renderHabits() {
-        const currentStates = JSON.parse(localStorage.getItem('batcave_current_week_v2'));
-        const previousStates = JSON.parse(localStorage.getItem('batcave_previous_week_v2'));
+        const currentStates = JSON.parse(localStorage.getItem('batcave_current_week_v3'));
+        const previousStates = JSON.parse(localStorage.getItem('batcave_previous_week_v3'));
 
         let currentHTML = "";
         let previousHTML = "";
 
         habitsList.forEach((habit, index) => {
             const isChecked = currentStates[index];
-            // Construcción Semana Actual con toggle de clases de selección/deselección interactiva
             currentHTML += `
                 <div class="checkbox-container ${isChecked ? 'selected-habit' : ''}" id="container_curr_${index}">
                     <input type="checkbox" id="curr_${index}" ${isChecked ? 'checked' : ''} onchange="toggleHabit(${index})">
                     <label for="curr_${index}">${habit}</label>
                 </div>`;
             
-            // Construcción Semana Anterior Limpia (Fase Inicial)
             previousHTML += `
                 <div class="checkbox-container">
                     <input type="checkbox" id="prev_${index}" ${previousStates[index] ? 'checked' : ''} disabled>
@@ -390,10 +384,9 @@
     }
 
     function toggleHabit(index) {
-        const currentStates = JSON.parse(localStorage.getItem('batcave_current_week_v2'));
-        // Permite tanto seleccionar como deseleccionar de manera síncrona ante errores de click
+        const currentStates = JSON.parse(localStorage.getItem('batcave_current_week_v3'));
         currentStates[index] = !currentStates[index];
-        localStorage.setItem('batcave_current_week_v2', JSON.stringify(currentStates));
+        localStorage.setItem('batcave_current_week_v3', JSON.stringify(currentStates));
         renderHabits();
     }
 
@@ -470,8 +463,11 @@
     const githubUser = window.location.hostname.split('.')[0];
     const urlProjects = `https://raw.githubusercontent.com/${githubUser}/batcave-dashboard/main/data/projects.csv`;
     const urlPubs = `https://raw.githubusercontent.com/${githubUser}/batcave-dashboard/main/data/publications.csv`;
-    const urlGrants = `https://raw.githubusercontent.com/${githubUser}/batcave-dashboard/main/data/grants.csv`;
+    const urlGrants = `https://raw.githubusercontent.com/${githubUser}/batcave-dashboard/main/main/data/grants.csv`;
     const urlOpps = `https://raw.githubusercontent.com/${githubUser}/batcave-dashboard/main/data/opportunities.csv`;
+
+    // Cambiar a rutas locales de respaldo si la carga raw tarda en refrescar en entornos locales
+    const fallbackPath = "../data/";
 
     Papa.parse(urlProjects, {
         download: true, header: true, skipEmptyLines: true,
@@ -485,7 +481,14 @@
 
     Papa.parse(urlGrants, {
         download: true, header: true, skipEmptyLines: true,
-        complete: function(r) { document.getElementById('table-grants').innerHTML = generateTableHTML(r.data); }
+        complete: function(r) { document.getElementById('table-grants').innerHTML = generateTableHTML(r.data); },
+        error: function() {
+            // Reintento con ruta relativa si hay un lag de actualización en GitHub
+            Papa.parse(fallbackPath + "grants.csv", {
+                download: true, header: true, skipEmptyLines: true,
+                complete: function(r) { document.getElementById('table-grants').innerHTML = generateTableHTML(r.data); }
+            });
+        }
     });
 
     Papa.parse(urlOpps, {
