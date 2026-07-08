@@ -91,21 +91,79 @@
             margin-bottom: 20px;
         }
 
-        .log-item { margin-bottom: 20px; }
-        .log-item strong { display: block; font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; }
-        .log-item p { margin: 0; font-size: 15px; color: var(--text-main); }
-        .log-item ul { margin: 0; padding-left: 20px; color: var(--text-main); font-size: 14px; }
-        .log-item li { margin-bottom: 6px; }
-        .checkbox-container { display: flex; align-items: center; margin-bottom: 6px; }
-        .checkbox-container input { margin-right: 8px; accent-color: var(--accent); }
+        /* Estilos del Launchpad de Enlaces */
+        .launchpad-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        .launch-btn {
+            background-color: #0f172a;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.2s ease;
+            display: block;
+        }
+        .launch-btn:hover {
+            border-color: var(--accent);
+            background-color: #1e293b;
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
 
+        /* Input de Alineación Matutina */
+        .alignment-box {
+            background-color: #0f172a;
+            border-left: 3px solid var(--accent);
+            padding: 12px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+        .signature-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .signature-input {
+            background: #0f172a;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            flex-grow: 1;
+            outline: none;
+        }
+        .signature-input:focus { border-color: var(--accent); }
+
+        /* Contenedor Todoist */
+        .todoist-placeholder {
+            background: rgba(148, 163, 184, 0.05);
+            border: 1px dashed var(--border);
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Estilos para tablas HTML */
         .table-wrapper { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
         th { padding: 12px; background-color: #111827; color: var(--accent); border-bottom: 2px solid var(--border); text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; }
         td { padding: 12px; border-bottom: 1px solid var(--border); color: var(--text-main); line-height: 1.5; vertical-align: top; }
         tr:hover { background-color: #24334d; }
 
-        /* Badges estéticos */
         .badge {
             display: inline-block;
             padding: 2px 8px;
@@ -139,7 +197,6 @@
     <div class="dashboard-grid">
         <!-- COLUMNA PRINCIPAL -->
         <div class="main-content">
-            <!-- NUEVA TABLA: PROYECTOS -->
             <div class="card">
                 <h2>Active Projects</h2>
                 <div class="table-wrapper" id="table-projects">
@@ -169,23 +226,36 @@
             </div>
         </div>
 
-        <!-- COLUMNA LATERAL -->
+        <!-- COLUMNA LATERAL: MISSION CONTROL CON ENLACES REALES -->
         <div class="sidebar">
+            <!-- MODULO 1: LAUNCHPAD DE ENLACES CONFIGURADOS -->
             <div class="card">
-                <h2>Daily Commander’s Log</h2>
-                <div class="log-item">
-                    <strong>Morning Oath</strong>
-                    <p><em>Sign your name</em></p>
+                <h2>Strategic Launchpad</h2>
+                <div class="launchpad-grid">
+                    <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank" class="launch-btn">📧 Correo</a>
+                    <a href="https://app.todoist.com/app/project/chamba-6Crg5Vx6ff2GXp7v" target="_blank" class="launch-btn">✅ Todoist</a>
+                    <a href="https://www.linkedin.com/feed/" target="_blank" class="launch-btn">💼 LinkedIn</a>
+                    <a href="https://drive.google.com/drive/u/0/my-drive" target="_blank" class="launch-btn">💾 Google Drive</a>
                 </div>
-                <div class="log-item">
-                    <strong>Top 3 Priorities</strong>
-                    <div class="checkbox-container"><input type="checkbox" id="p1"> <label for="p1">Write section of paper</label></div>
-                    <div class="checkbox-container"><input type="checkbox" id="p2"> <label for="p2">Draft grant intro</label></div>
-                    <div class="checkbox-container"><input type="checkbox" id="p3"> <label for="p3">Email collaborator</label></div>
+            </div>
+
+            <!-- MODULO 2: ALINEACIÓN MATUTINA -->
+            <div class="card">
+                <h2>Morning Alignment</h2>
+                <div class="alignment-box">
+                    "El conocimiento no es solo infraestructura abierta, sino una responsabilidad ética hacia las comunidades y los territorios."
                 </div>
-                <div class="log-item">
-                    <strong>Evening Reflection</strong>
-                    <p>Submitted draft to co-author</p>
+                <div class="signature-container">
+                    <input type="text" id="commanderSignature" class="signature-input" placeholder="Escribe tu nombre para iniciar el día...">
+                </div>
+            </div>
+
+            <!-- MODULO 3: INTEGRACIÓN INTEGRAL (TODOIST FEED) -->
+            <div class="card">
+                <h2>Todoist Active Feed</h2>
+                <div class="todoist-placeholder">
+                    <p style="margin: 0 0 8px 0; font-weight: 500; color: var(--text-main);">Ecosistema Conectado</p>
+                    Revisa tus bandejas de entrada críticas para sincronizar las tareas inmediatas con las metas del panel central.
                 </div>
             </div>
         </div>
@@ -208,11 +278,9 @@
                 headers.forEach(key => {
                     let cellValue = row[key] ? row[key].trim() : '';
                     
-                    // Tratamiento de Links/DOIs
                     if (cellValue.startsWith('http://') || cellValue.startsWith('https://')) {
                         tableHtml += `<td><a href="${cellValue}" target="_blank" class="link-btn">Ver Enlace ↗</a></td>`;
                     } 
-                    // Tratamiento de Estados o Prioridades
                     else if (key.toLowerCase() === 'status' || key.toLowerCase() === 'stage' || key.toLowerCase() === 'priority') {
                         let badgeClass = 'badge-neutral';
                         let valLower = cellValue.toLowerCase();
@@ -221,7 +289,6 @@
                         if (valLower === 'high') badgeClass = 'badge-high';
                         tableHtml += `<td><span class="badge ${badgeClass}">${cellValue}</span></td>`;
                     } 
-                    // Tratamiento visual de subcomponentes listados con punto y coma
                     else if (key.toLowerCase().includes('subcomponents') || key.toLowerCase().includes('tasks')) {
                         if (cellValue.includes(';')) {
                             let items = cellValue.split(';').map(i => `<li>${i.trim()}</li>`).join('');
