@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Batcave Dashboard 🦇</title>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     
     <style>
@@ -95,10 +94,10 @@
         .checkbox-container { display: flex; align-items: center; margin-bottom: 6px; }
         .checkbox-container input { margin-right: 8px; accent-color: var(--accent); }
 
-        /* Estilos para tablas HTML dinámicas */
+        /* Estilos unificados para todas las tablas HTML dinámicas */
         .table-wrapper { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; }
-        th { padding: 12px; background-color: #111827; color: var(--accent); border-bottom: 2px solid var(--border); }
+        th { padding: 12px; background-color: #111827; color: var(--accent); border-bottom: 2px solid var(--border); text-transform: uppercase; font-size: 12px; letter-spacing: 0.05em; }
         td { padding: 12px; border-bottom: 1px solid var(--border); color: var(--text-main); }
         tr:hover { background-color: #334155; }
     </style>
@@ -117,12 +116,16 @@
         <div class="main-content">
             <div class="card">
                 <h2>Publications Progress</h2>
-                <div id="chart-publications"></div>
+                <div class="table-wrapper" id="table-publications">
+                    <p style="color: var(--text-muted);">Cargando publicaciones...</p>
+                </div>
             </div>
 
             <div class="card">
                 <h2>Grant Pipeline</h2>
-                <div id="chart-grants"></div>
+                <div class="table-wrapper" id="table-grants">
+                    <p style="color: var(--text-muted);">Cargando línea de tiempo de subsidios...</p>
+                </div>
             </div>
 
             <div class="card">
@@ -156,96 +159,68 @@
 </div>
 
 <script>
-    // Configuración estética común para los gráficos oscuros
-    const layoutTemplate = {
-        paper_bgcolor: 'rgba(0,0,0,0)',
-        plot_bgcolor: 'rgba(0,0,0,0)',
-        font: { color: '#f8fafc', family: 'sans-serif' },
-        margin: { t: 40, r: 20, l: 60, b: 40 }
-    };
+    // Función reutilizable para transformar datos CSV en tablas HTML estructuradas
+    function generateTableHTML(data) {
+        if (!data || data.length === 0) return '<p style="color: var(--text-muted);">Sin registros encontrados.</p>';
 
-    // Obtenemos de forma automática el nombre de usuario de GitHub a partir de la URL actual
+        let tableHtml = '<table><thead><tr>';
+        // Crear las cabeceras basadas en las columnas del CSV automáticamente
+        Object.keys(data[0]).forEach(key => {
+            if(key.trim() !== "") tableHtml += `<th>${key}</th>`;
+        });
+        tableHtml += '</tr></thead><tbody>';
+
+        // Agregar las filas de datos
+        data.forEach(row => {
+            if (Object.values(row).some(x => x && x.trim() !== "")) { // Evita pintar filas vacías
+                tableHtml += '<tr>';
+                Object.keys(data[0]).forEach(key => {
+                    if(key.trim() !== "") {
+                        tableHtml += `<td>${row[key] || ''}</td>`;
+                    }
+                });
+                tableHtml += '</tr>';
+            }
+        });
+        tableHtml += '</tbody></table>';
+        return tableHtml;
+    }
+
+    // Detectar el usuario de GitHub de forma dinámica a través de la URL
     const githubUser = window.location.hostname.split('.')[0];
     
-    // Construimos las rutas absolutas "raw" que nunca fallan por bloqueos de CORS
+    // URLs absolutas del contenido en crudo de tu repositorio
     const urlPubs = `https://raw.githubusercontent.com/${githubUser}/batcave-dashboard/main/data/publications.csv`;
     const urlGrants = `https://raw.githubusercontent.com/${githubUser}/batcave-dashboard/main/data/grants.csv`;
     const urlOpps = `https://raw.githubusercontent.com/${githubUser}/batcave-dashboard/main/data/opportunities.csv`;
 
-    // 1. CARGAR Y PROCESAR PUBLICACIONES
+    // 1. CARGAR Y RENDERIZAR TABLA DE PUBLICACIONES
     Papa.parse(urlPubs, {
         download: true,
         header: true,
+        skipEmptyLines: true,
         complete: function(results) {
-            const data = results.data;
-            const counts = {};
-            data.forEach(row => {
-                if(row.Status) counts[row.Status] = (counts[row.Status] || 0) + 1;
-            });
-
-            const trace = {
-                x: Object.keys(counts),
-                y: Object.values(counts),
-                type: 'bar',
-                marker: { color: '#38bdf8' }
-            };
-
-            const layout = { ...layoutTemplate, title: 'Estado Actual de Artículos', yaxis: { gridcolor: '#334155' } };
-            Plotly.newPlot('chart-publications', [trace], layout);
+            document.getElementById('table-publications').innerHTML = generateTableHTML(results.data);
         }
     });
 
-    // 2. CARGAR Y PROCESAR GRANTS (GANTT)
+    // 2. CARGAR Y RENDERIZAR TABLA DE GRANTS
     Papa.parse(urlGrants, {
         download: true,
         header: true,
+        skipEmptyLines: true,
         complete: function(results) {
-            const data = results.data.filter(row => row.Grant && row.Start && row.Deadline);
-            
-            const traces = [];
-            data.forEach((row, index) => {
-                traces.push({
-                    x: [row.Start, row.Deadline],
-                    y: [row.Grant, row.Grant],
-                    type: 'scatter',
-                    mode: 'lines',
-                    line: { width: 20, color: row.Stage === 'Submitted' ? '#34d399' : '#fbbf24' },
-                    name: row.Stage,
-                    showlegend: index === 0
-                });
-            });
-
-            const layout = { 
-                ...layoutTemplate, 
-                title: 'Línea de Tiempo de Subsidios',
-                xaxis: { type: 'date', gridcolor: '#334155' },
-                yaxis: { autorange: 'reversed' }
-            };
-            Plotly.newPlot('chart-grants', traces, layout);
+            document.getElementById('table-grants').innerHTML = generateTableHTML(results.data);
         }
     });
 
-    // 3. CARGAR Y GENERAR TABLA DE OPORTUNIDADES
+    // 3. CARGAR Y RENDERIZAR TABLA DE OPORTUNIDADES
     Papa.parse(urlOpps, {
         download: true,
         header: true,
+        skipEmptyLines: true,
         complete: function(results) {
-            const data = results.data;
-            if(data.length === 0) return;
-
-            let tableHtml = '<table><thead><tr>';
-            Object.keys(data[0]).forEach(key => tableHtml += `<th>${key}</th>`);
-            tableHtml += '</tr></thead><tbody>';
-
-            data.forEach(row => {
-                if(Object.values(row).some(x => x)) {
-                    tableHtml += '<tr>';
-                    Object.values(row).forEach(val => tableHtml += `<td>${val || ''}</td>`);
-                    tableHtml += '</tr>';
-                }
-            });
-            tableHtml += '</tbody></table>';
-            document.getElementById('table-opportunities').innerHTML = tableHtml;
+            document.getElementById('table-opportunities').innerHTML = generateTableHTML(results.data);
         }
     });
 </script>
