@@ -165,7 +165,7 @@
     };
 
     // 1. CARGAR Y PROCESAR PUBLICACIONES
-    Papa.parse('../data/publications.csv', {
+    Papa.parse('/batcave-dashboard/data/publications.csv', {
         download: true,
         header: true,
         complete: function(results) {
@@ -189,7 +189,7 @@
     });
 
     // 2. CARGAR Y PROCESAR GRANTS (GANTT)
-    Papa.parse('../data/grants.csv', {
+    Papa.parse('/batcave-dashboard/data/grants.csv', {
         download: true,
         header: true,
         complete: function(results) {
@@ -219,7 +219,7 @@
     });
 
     // 3. CARGAR Y GENERAR TABLA DE OPORTUNIDADES
-    Papa.parse('../data/opportunities.csv', {
+    Papa.parse('/batcave-dashboard/data/opportunities.csv', {
         download: true,
         header: true,
         complete: function(results) {
