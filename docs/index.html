@@ -91,7 +91,7 @@
             margin-bottom: 20px;
         }
 
-        /* Launchpad */
+        /* Launchpad de Enlaces */
         .launchpad-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -116,47 +116,51 @@
             color: var(--accent);
             transform: translateY(-2px);
         }
+        .launch-btn-wide {
+            grid-column: span 2;
+            border-color: rgba(56, 189, 248, 0.4);
+            background-color: rgba(56, 189, 248, 0.02);
+        }
 
-        /* Estilos del Nuevo Manifiesto de Alineación */
-        .alignment-section {
+        /* Estilos del Manifiesto de Alineación */
+        .alignment-section { margin-bottom: 16px; }
+        .alignment-title { font-size: 13px; font-weight: 700; color: var(--accent); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .alignment-box { background-color: #0f172a; padding: 12px 16px; border-radius: 8px; font-size: 13px; line-height: 1.5; border-left: 3px solid var(--border); margin-bottom: 8px; }
+        .alignment-box ol { margin: 0; padding-left: 20px; }
+        .alignment-box li { margin-bottom: 6px; }
+        .highlight-text { color: var(--warning); font-weight: 600; }
+
+        /* Sistema de Pestañas de Compromisos Semanales */
+        .week-tabs {
+            display: flex;
+            gap: 4px;
             margin-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
         }
-        .alignment-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--accent);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+        .tab-btn {
+            background: #0f172a;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 500;
         }
-        .alignment-box {
-            background-color: #0f172a;
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 13px;
-            line-height: 1.5;
-            border-left: 3px solid var(--border);
-            margin-bottom: 8px;
-        }
-        .alignment-box ol, .alignment-box ul {
-            margin: 0;
-            padding-left: 20px;
-        }
-        .alignment-box li {
-            margin-bottom: 6px;
-        }
-        .alignment-box li:last-child {
-            margin-bottom: 0;
-        }
-        .highlight-text {
-            color: var(--warning);
+        .tab-btn.active {
+            background: var(--accent);
+            color: #000000;
+            border-color: var(--accent);
             font-weight: 600;
         }
+        .week-content { display: none; }
+        .week-content.active { display: block; }
 
         .checkbox-container {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-size: 13px;
             line-height: 1.4;
         }
@@ -166,9 +170,9 @@
             accent-color: var(--accent);
             cursor: pointer;
         }
-        .checkbox-container label {
-            cursor: pointer;
-        }
+        .checkbox-container label { cursor: pointer; }
+        .week-prev .checkbox-container input { pointer-events: none; opacity: 0.6; } /* Bloquear edición en semana anterior */
+        .week-prev .checkbox-container label { color: var(--text-muted); }
 
         /* Tablas */
         .table-wrapper { overflow-x: auto; }
@@ -208,8 +212,9 @@
     </header>
 
     <div class="dashboard-grid">
-        <!-- COLUMNA PRINCIPAL -->
+        <!-- COLUMNA PRINCIPAL REORDENADA -->
         <div class="main-content">
+            <!-- 1. ACTIVE PROJECTS -->
             <div class="card">
                 <h2>Active Projects</h2>
                 <div class="table-wrapper" id="table-projects">
@@ -217,13 +222,7 @@
                 </div>
             </div>
 
-            <div class="card">
-                <h2>Publications Progress</h2>
-                <div class="table-wrapper" id="table-publications">
-                    <p style="color: var(--text-muted);">Cargando publicaciones...</p>
-                </div>
-            </div>
-
+            <!-- 2. GRANT PIPELINE (MOVIDO AQUÍ) -->
             <div class="card">
                 <h2>Grant Pipeline</h2>
                 <div class="table-wrapper" id="table-grants">
@@ -231,6 +230,15 @@
                 </div>
             </div>
 
+            <!-- 3. PUBLICATIONS PROGRESS -->
+            <div class="card">
+                <h2>Publications Progress</h2>
+                <div class="table-wrapper" id="table-publications">
+                    <p style="color: var(--text-muted);">Cargando publicaciones...</p>
+                </div>
+            </div>
+
+            <!-- 4. OPPORTUNITIES LOG -->
             <div class="card">
                 <h2>Opportunities Log</h2>
                 <div class="table-wrapper" id="table-opportunities">
@@ -239,9 +247,9 @@
             </div>
         </div>
 
-        <!-- COLUMNA LATERAL: MISSION CONTROL TOTAL -->
+        <!-- COLUMNA LATERAL: MISSION CONTROL -->
         <div class="sidebar">
-            <!-- LAUNCHPAD -->
+            <!-- STRATEGIC LAUNCHPAD CON AIRTABLE -->
             <div class="card">
                 <h2>Strategic Launchpad</h2>
                 <div class="launchpad-grid">
@@ -249,14 +257,14 @@
                     <a href="https://app.todoist.com/app/project/chamba-6Crg5Vx6ff2GXp7v" target="_blank" class="launch-btn">✅ Todoist</a>
                     <a href="https://www.linkedin.com/feed/" target="_blank" class="launch-btn">💼 LinkedIn</a>
                     <a href="https://drive.google.com/drive/u/0/my-drive" target="_blank" class="launch-btn">💾 Google Drive</a>
+                    <!-- ENLACE DE AIRTABLE EXTENDIDO -->
+                    <a href="https://airtable.com/app2rlFCWiu1IksPc/tblfPjmUiQeTs6FM2/viwtX0HWhfOKR06sL?blocks=hide" target="_blank" class="launch-btn launch-btn-wide">📊 III Encuentro CTS Perú 2026 ↗</a>
                 </div>
             </div>
 
-            <!-- NUEVO MORNING ALIGNMENT INTEGRAL -->
+            <!-- MORNING ALIGNMENT -->
             <div class="card">
                 <h2>Morning Alignment</h2>
-                
-                <!-- ¿Por qué hago lo que hago? -->
                 <div class="alignment-section">
                     <div class="alignment-title">¿Por qué hago lo que hago?</div>
                     <div class="alignment-box" style="border-left-color: var(--accent);">
@@ -268,7 +276,6 @@
                     </div>
                 </div>
 
-                <!-- ¡Para no olvidar! -->
                 <div class="alignment-section">
                     <div class="alignment-title">¡Para no olvidar! (Ojo)</div>
                     <div class="alignment-box" style="border-left-color: var(--warning);">
@@ -282,50 +289,24 @@
                 </div>
             </div>
 
-            <!-- COMPROMISOS DIARIOS CHECKEABLES -->
+            <!-- COMPROMISOS EVALUABLES POR PESTAÑAS SEMANALES -->
             <div class="card">
-                <h2>Me comprometo a:</h2>
-                <div style="margin-top: 10px;">
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="c1">
-                        <label for="c1">Levantarme temprano y a dormir temprano (7am / 12am)</label>
-                    </div>
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="c2">
-                        <label for="c2">Almorzar entre 1-2pm los días de semana</label>
-                    </div>
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="c3">
-                        <label for="c3">Hacer ejercicio de forma más constante</label>
-                    </div>
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="c4">
-                        <label for="c4">Planificar mi semana (lun o dom)</label>
-                    </div>
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="c5">
-                        <label for="c5">Gestionar mejor mis gastos</label>
-                    </div>
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="c6">
-                        <label for="c6">Reducir tiempo en Internet</label>
-                    </div>
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="c7">
-                        <label for="c7">Darme tiempo para escribir en las noches (11-12pm)</label>
-                    </div>
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="c8">
-                        <label for="c8">Usar el carro y manejar de manera constante (1 vez o 2 veces x semana)</label>
-                    </div>
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="c9">
-                        <label for="c9">Ir a la playa</label>
-                    </div>
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="c10">
-                        <label for="c10">¡Apoyar proyectos de amigos!</label>
-                    </div>
+                <h2>Compromisos de Hábitos</h2>
+                
+                <div class="week-tabs">
+                    <button class="tab-btn active" onclick="switchWeek('current')">Semana Actual</button>
+                    <button class="tab-btn" onclick="switchWeek('previous')">Semana Anterior</button>
+                </div>
+
+                <!-- CONTENEDOR SEMANA ACTUAL (INTERACTIVO) -->
+                <div id="week-current" class="week-content active">
+                    <!-- Los checkboxes se cargan automáticamente desde el script para persistir datos -->
+                    <div id="current-habits-list"></div>
+                </div>
+
+                <!-- CONTENEDOR SEMANA ANTERIOR (HISTORIAL HISTÓRICO) -->
+                <div id="week-previous" class="week-content week-prev">
+                    <div id="previous-habits-list"></div>
                 </div>
             </div>
         </div>
@@ -333,6 +314,87 @@
 </div>
 
 <script>
+    // Arreglo de los 10 compromisos fundamentales basados en tus notas
+    const habitsList = [
+        "Levantarme temprano y a dormir temprano (7am / 12am)",
+        "Almorzar entre 1-2pm los días de semana",
+        "Hacer ejercicio de forma más constante",
+        "Planificar mi semana (lun o dom)",
+        "Gestionar mejor mis gastos",
+        "Reducir tiempo en Internet",
+        "Darme tiempo para escribir en las noches (11-12pm)",
+        "Usar el carro y manejar de manera constante (1 vez o 2 veces x semana)",
+        "Ir a la playa",
+        "¡Apoyar proyectos de amigos!"
+    ];
+
+    // Lógica para inicializar y guardar los estados en LocalStorage y simular el ciclo semanal
+    function initHabitsDashboard() {
+        // Si no existen registros en el navegador, los creamos por defecto
+        if (!localStorage.getItem('batcave_current_week')) {
+            localStorage.setItem('batcave_current_week', JSON.stringify(new Array(habitsList.length).fill(false)));
+        }
+        if (!localStorage.getItem('batcave_previous_week')) {
+            // Simulación inicial: algunos ya alcanzados la semana pasada
+            localStorage.setItem('batcave_previous_week', JSON.stringify([true, true, false, true, false, false, true, false, true, true]));
+        }
+
+        renderHabits();
+    }
+
+    function renderHabits() {
+        const currentStates = JSON.parse(localStorage.getItem('batcave_current_week'));
+        const previousStates = JSON.parse(localStorage.getItem('batcave_previous_week'));
+
+        let currentHTML = "";
+        let previousHTML = "";
+
+        habitsList.forEach((habit, index) => {
+            // Construir Semana Actual
+            currentHTML += `
+                <div class="checkbox-container">
+                    <input type="checkbox" id="curr_${index}" ${currentStates[index] ? 'checked' : ''} onchange="toggleHabit(${index})">
+                    <label for="curr_${index}">${habit}</label>
+                </div>`;
+            
+            // Construir Vista Estática de Semana Anterior
+            previousHTML += `
+                <div class="checkbox-container">
+                    <input type="checkbox" id="prev_${index}" ${previousStates[index] ? 'checked' : ''} disabled>
+                    <label style="text-decoration: ${previousStates[index] ? 'none' : 'line-through'}; opacity: 0.7;">
+                        ${previousStates[index] ? '✓ Mantenido: ' : '✗ Incumplido: '} ${habit}
+                    </label>
+                </div>`;
+        });
+
+        document.getElementById('current-habits-list').innerHTML = currentHTML;
+        document.getElementById('previous-habits-list').innerHTML = previousHTML;
+    }
+
+    function toggleHabit(index) {
+        const currentStates = JSON.parse(localStorage.getItem('batcave_current_week'));
+        currentStates[index] = !currentStates[index];
+        localStorage.setItem('batcave_current_week', JSON.stringify(currentStates));
+        renderHabits();
+    }
+
+    function switchWeek(week) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.week-content').forEach(content => content.classList.remove('active'));
+
+        if (week === 'current') {
+            event.target.classList.add('active');
+            document.getElementById('week-current').classList.add('active');
+        } else {
+            event.target.classList.add('active');
+            document.getElementById('week-previous').classList.add('active');
+        }
+    }
+
+    // Ejecutar inicializador de hábitos
+    initHabitsDashboard();
+
+    // Renderizador unificado para las tablas dinámicas
     function generateTableHTML(data) {
         if (!data || data.length === 0) return '<p style="color: var(--text-muted);">Sin registros.</p>';
 
