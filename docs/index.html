@@ -16,6 +16,7 @@
             --border: #334155;
             --success: #34d399;
             --warning: #fbbf24;
+            --danger: #f87171;
         }
 
         body {
@@ -101,10 +102,10 @@
         .table-wrapper { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
         th { padding: 12px; background-color: #111827; color: var(--accent); border-bottom: 2px solid var(--border); text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; }
-        td { padding: 12px; border-bottom: 1px solid var(--border); color: var(--text-main); line-height: 1.4; vertical-align: top; }
+        td { padding: 12px; border-bottom: 1px solid var(--border); color: var(--text-main); line-height: 1.5; vertical-align: top; }
         tr:hover { background-color: #24334d; }
 
-        /* Badges de Estado */
+        /* Badges estéticos */
         .badge {
             display: inline-block;
             padding: 2px 8px;
@@ -113,9 +114,10 @@
             font-weight: 600;
             text-transform: uppercase;
         }
-        .badge-published { background-color: rgba(52, 211, 153, 0.2); color: var(--success); }
-        .badge-submitted { background-color: rgba(251, 191, 36, 0.2); color: var(--warning); }
-        .badge-draft { background-color: rgba(148, 163, 184, 0.2); color: var(--text-muted); }
+        .badge-active { background-color: rgba(52, 211, 153, 0.2); color: var(--success); }
+        .badge-progress { background-color: rgba(251, 191, 36, 0.2); color: var(--warning); }
+        .badge-high { background-color: rgba(248, 113, 113, 0.2); color: var(--danger); }
+        .badge-neutral { background-color: rgba(148, 163, 184, 0.2); color: var(--text-muted); }
 
         .link-btn { color: var(--accent); text-decoration: none; font-weight: 500; }
         .link-btn:hover { text-decoration: underline; }
@@ -135,7 +137,16 @@
     </header>
 
     <div class="dashboard-grid">
+        <!-- COLUMNA PRINCIPAL -->
         <div class="main-content">
+            <!-- NUEVA TABLA: PROYECTOS -->
+            <div class="card">
+                <h2>Active Projects</h2>
+                <div class="table-wrapper" id="table-projects">
+                    <p style="color: var(--text-muted);">Cargando proyectos principales...</p>
+                </div>
+            </div>
+
             <div class="card">
                 <h2>Publications Progress</h2>
                 <div class="table-wrapper" id="table-publications">
@@ -158,6 +169,7 @@
             </div>
         </div>
 
+        <!-- COLUMNA LATERAL -->
         <div class="sidebar">
             <div class="card">
                 <h2>Daily Commander’s Log</h2>
@@ -181,10 +193,7 @@
 </div>
 
 <script>
-    // Almacén global para filtrar
-    let loadedData = { publications: [], grants: [], opportunities: [] };
-
-    function generateTableHTML(data, type) {
+    function generateTableHTML(data) {
         if (!data || data.length === 0) return '<p style="color: var(--text-muted);">Sin registros.</p>';
 
         let tableHtml = '<table><thead><tr>';
@@ -203,12 +212,23 @@
                     if (cellValue.startsWith('http://') || cellValue.startsWith('https://')) {
                         tableHtml += `<td><a href="${cellValue}" target="_blank" class="link-btn">Ver Enlace ↗</a></td>`;
                     } 
-                    // Tratamiento de Estados/Etapas
-                    else if (key.toLowerCase() === 'status' || key.toLowerCase() === 'stage') {
-                        let badgeClass = 'badge-draft';
-                        if (cellValue.toLowerCase() === 'published' || cellValue.toLowerCase() === 'awarded') badgeClass = 'badge-published';
-                        if (cellValue.toLowerCase() === 'submitted' || cellValue.toLowerCase() === 'under review') badgeClass = 'badge-submitted';
+                    // Tratamiento de Estados o Prioridades
+                    else if (key.toLowerCase() === 'status' || key.toLowerCase() === 'stage' || key.toLowerCase() === 'priority') {
+                        let badgeClass = 'badge-neutral';
+                        let valLower = cellValue.toLowerCase();
+                        if (valLower === 'published' || valLower === 'awarded' || valLower === 'active') badgeClass = 'badge-active';
+                        if (valLower === 'submitted' || valLower === 'under review' || valLower === 'in progress') badgeClass = 'badge-progress';
+                        if (valLower === 'high') badgeClass = 'badge-high';
                         tableHtml += `<td><span class="badge ${badgeClass}">${cellValue}</span></td>`;
+                    } 
+                    // Tratamiento visual de subcomponentes listados con punto y coma
+                    else if (key.toLowerCase().includes('subcomponents') || key.toLowerCase().includes('tasks')) {
+                        if (cellValue.includes(';')) {
+                            let items = cellValue.split(';').map(i => `<li>${i.trim()}</li>`).join('');
+                            tableHtml += `<td><ul style="margin:0; padding-left:16px;">${items}</ul></td>`;
+                        } else {
+                            tableHtml += `<td>${cellValue}</td>`;
+                        }
                     } else {
                         tableHtml += `<td>${cellValue}</td>`;
                     }
@@ -220,7 +240,6 @@
         return tableHtml;
     }
 
-    // Buscador interactivo global
     function filterTables() {
         let input = document.getElementById("dashboardSearch");
         let filter = input.value.toLowerCase();
@@ -233,23 +252,29 @@
     }
 
     const githubUser = window.location.hostname.split('.')[0];
+    const urlProjects = `https://raw.githubusercontent.com/${githubUser}/batcave-dashboard/main/data/projects.csv`;
     const urlPubs = `https://raw.githubusercontent.com/${githubUser}/batcave-dashboard/main/data/publications.csv`;
     const urlGrants = `https://raw.githubusercontent.com/${githubUser}/batcave-dashboard/main/data/grants.csv`;
     const urlOpps = `https://raw.githubusercontent.com/${githubUser}/batcave-dashboard/main/data/opportunities.csv`;
 
+    Papa.parse(urlProjects, {
+        download: true, header: true, skipEmptyLines: true,
+        complete: function(r) { document.getElementById('table-projects').innerHTML = generateTableHTML(r.data); }
+    });
+
     Papa.parse(urlPubs, {
         download: true, header: true, skipEmptyLines: true,
-        complete: function(r) { document.getElementById('table-publications').innerHTML = generateTableHTML(r.data, 'pubs'); }
+        complete: function(r) { document.getElementById('table-publications').innerHTML = generateTableHTML(r.data); }
     });
 
     Papa.parse(urlGrants, {
         download: true, header: true, skipEmptyLines: true,
-        complete: function(r) { document.getElementById('table-grants').innerHTML = generateTableHTML(r.data, 'grants'); }
+        complete: function(r) { document.getElementById('table-grants').innerHTML = generateTableHTML(r.data); }
     });
 
     Papa.parse(urlOpps, {
         download: true, header: true, skipEmptyLines: true,
-        complete: function(r) { document.getElementById('table-opportunities').innerHTML = generateTableHTML(r.data, 'opps'); }
+        complete: function(r) { document.getElementById('table-opportunities').innerHTML = generateTableHTML(r.data); }
     });
 </script>
 
